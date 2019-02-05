@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Transaction:</strong>
+  <%= @confirm_transaction.transaction_id %>
+</p>
+
+<p>
+  <strong>Status:</strong>
+  <%= @confirm_transaction.status %>
+</p>
+
+<%= link_to 'Edit', edit_confirm_transaction_path(@confirm_transaction) %> |
+<%= link_to 'Back', confirm_transactions_path %>

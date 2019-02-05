@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Confirm Transactions</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Transaction</th>
+      <th>Status</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @confirm_transactions.each do |confirm_transaction| %>
+      <tr>
+        <td><%= confirm_transaction.transaction_id %></td>
+        <td><%= confirm_transaction.status %></td>
+        <td><%= link_to 'Show', confirm_transaction %></td>
+        <td><%= link_to 'Edit', edit_confirm_transaction_path(confirm_transaction) %></td>
+        <td><%= link_to 'Destroy', confirm_transaction, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Confirm Transaction', new_confirm_transaction_path %>

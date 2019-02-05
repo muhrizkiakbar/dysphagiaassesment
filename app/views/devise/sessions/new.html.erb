@@ -1,0 +1,38 @@
+
+
+<section class="hero is-fullheight is-success">
+  <div class="hero-body">
+    <div class="container has-text-centered">
+      <div class="column is-4 is-offset-4">
+        <h3 class="title has-text-white">Login</h3>
+        <p class="subtitle has-text-white">Untuk Menggunakan Aplikasi</p>
+        <div class="box">
+          <figure class="avatar">
+            <img src="https://lh3.googleusercontent.com/-2MQW9HIaoe8/W5EFXzNdnmI/AAAAAAAAAAo/NwdlS41KA70OkT4Ugc3FbZPLEyJzerTAQCEwYBhgL/w140-h140-p/WhatsApp%2BImage%2B2018-07-30%2Bat%2B00.12.06.jpeg">
+          </figure>
+
+          <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+            <div class="control">
+              <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "Email", class: "input" %>
+            </div>
+            <br>
+            <div class="control">
+              <%= f.password_field :password, autocomplete: "current-password", class: "input", placeholder: "Password" %>
+            </div>
+
+            <% if devise_mapping.rememberable? -%>
+              <div class="control">
+                <%= f.check_box :remember_me %>
+                <%= f.label :remember_me %>
+              </div>
+            <% end -%>
+
+            <div class="actions">
+              <%= f.submit "Log in", class: "button is-info is-medium is-fullwidth" %>
+            </div>
+          <% end %>
+        </div>            
+      </div>
+    </div>
+  </div> 
+</section>

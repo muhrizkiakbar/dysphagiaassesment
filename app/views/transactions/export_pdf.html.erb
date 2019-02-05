@@ -1,0 +1,139 @@
+<h1>Laporan Screening</h1>
+<h4><strong>Skor :</strong> <%= @transaction.score %></h4>
+<h5>Di Lakukan Oleh: <%= @transaction.useralias.name %></h4>
+<hr>
+
+<table style="width:70%;margin-right:auto;">
+  <tr>
+    <th style="width:auto;"></th>
+    <th style="width:auto;"></th>
+  </tr>
+  <tr>
+    <td>
+      <p>
+        <strong>Nama:</strong>
+        <%= @transaction.name %>
+      </p>
+    </td>
+    <td>
+      <p>
+        <strong>Umur:</strong>
+        <%= @transaction.age %>
+      </p>
+    </td>
+    <td>
+  </tr>
+  <tr>
+    <td>
+      <p>
+        <strong>Jenis Kelamin:</strong>
+        <%= @transaction.gender %>
+      </p>
+    </td>
+    <td>
+      <p>
+        <strong>Tanggal Masuk:</strong>
+        <%= @transaction.created_at.strftime("%d/%b/%Y %H:%M:%S") %>
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <p>
+        <strong>Ruangan:</strong>
+        <%= @transaction.ruangan %>
+      </p>
+    </td>
+    <td>
+      <p>
+        <strong>Dokter:</strong>
+        <%= @transaction.doctor %>
+      </p>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <p>
+        <strong>Nomor Rekam Medik:</strong>
+        <%= @transaction.medic_record_number %>
+      </p>
+    </td>
+    <td>
+      <p>
+        <strong>Nomor Kasur:</strong>
+        <%= @transaction.bed_number %>
+      </p>
+    </td>
+  </tr>
+</table>
+
+<hr>
+<h2>Pertanyaan dan Jawaban</h2>
+<table style="width:70%;margin-right:auto;">
+  <% @subtransactions.each do |subtransaction| %>
+  <tr>
+    <td style="width:300px;">
+        <p style="margin-bottom:15px;"><strong><%= subtransaction.answer.question.question %></strong></p>
+        <li><%= subtransaction.answer.answer %> (<%= subtransaction.answer.value %>)</li>
+    </td>
+  </tr>
+  <% end %>
+  
+</table>
+
+<hr>
+<table style="width:70%;;margin-right:auto;">
+  <tr>
+    <td style="text-align:left;">
+        <h2>
+        <%= @decision.title %> <small>(<%= @decision.begin_value %> - <%= @decision.end_value %>)</small>
+        </h2>    
+        <p>
+          <%= @decision.decision.html_safe %>
+        </p>
+    </td>
+  </tr>
+  
+</table>
+
+<% if (@transaction.confirm_transaction != nil) %>
+<hr>
+<table style="width:70%;;margin-right:auto;">
+  <tr>
+    <td style="text-align:left;">
+        <h2>
+        Hasil Tes 
+        </h2>    
+        <p>
+          <% if @transaction.confirm_transaction.status %>
+              Berhasil. Tidak usah mencatat tanda-tanda klinik. Beri urutan makan dan tempatkan pada tindakan pencegahan aspirasi.
+          <% else %>
+              Gagal. Catat tanda klinis aspirasi, suruh pasien untuk puasa dan beritahu dokter.
+          <% end %> 
+        </p>
+    </td>
+  </tr>
+  
+</table>
+<% end %>
+
+<% if (@transaction.clarification_transaction.count(:transaction_id) != 0) %>
+<hr>
+<table style="width:70%;;margin-right:auto;">
+  <tr>
+    <td style="text-align:left;">
+        <h2>
+        Hasil Klarifikasi
+        </h2>    
+        <p>
+          <% @transaction.clarification_transaction.each do |clarification| %> 
+              <%= clarification.clarification %><br>
+          <% end %> 
+        </p>
+    </td>
+  </tr>
+</table>
+<% end %>
+
+</br>
+

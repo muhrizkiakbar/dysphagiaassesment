@@ -1,0 +1,68 @@
+<%= render "layouts/nav" %>
+<% if notice!=nil %>
+<div class="column is-12 ">
+    <div class="notification is-warning">
+      <button class="delete"></button>
+      <%= notice %>
+    </div>
+</div>
+<% end %>
+
+<%= form_with(model: decision, local: true) do |form| %>
+  <% if decision.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(decision.errors.count, "error") %> prohibited this decision from being saved:</h2>
+
+      <ul>
+      <% decision.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="column is-12">
+    <div class="box cta">
+
+      <div class="field">
+        <div class="control">
+          <%= form.text_field :title, class: "input", placeholder: "Title" %>
+        </div>
+      </div>
+      
+      <div class="field">
+        <div class="control">
+          <%= form.number_field :begin_value, class: "input", placeholder: "Begin Value" %>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="control">
+          <%= form.number_field :end_value, class: "input", placeholder: "End Value" %>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="control">
+          <%= form.cktext_area :decision, rows: 10, class: "input" %>
+        </div>
+      </div>
+
+      <footer class="card-footer">
+        <div class="card-footer-item">
+          <div class="columns">
+            <div class="column is-12">
+              <div class="buttons is-center">
+                <%= form.submit :class => "button is-link"%>
+                
+                <%= link_to decisions_path ,class: "button is-danger" do%>
+                  Back
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+<% end %>

@@ -1,0 +1,27 @@
+<%= form_with(model: clarification_transaction, local: true) do |form| %>
+  <% if clarification_transaction.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(clarification_transaction.errors.count, "error") %> prohibited this clarification_transaction from being saved:</h2>
+
+      <ul>
+      <% clarification_transaction.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :transaction_id %>
+    <%= form.text_field :transaction_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :clarification %>
+    <%= form.text_field :clarification %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

@@ -1,0 +1,1 @@
+json.partial! "clarification_transactions/clarification_transaction", clarification_transaction: @clarification_transaction

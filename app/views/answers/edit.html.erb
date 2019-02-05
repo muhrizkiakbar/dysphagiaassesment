@@ -1,0 +1,48 @@
+<%= render "layouts/nav" %>
+
+<%= form_for @answer, :url => question_answer_path(@question), :method => :put do |form| %>
+  <% if @answer.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@answer.errors.count, "error") %> prohibited this answer from being saved:</h2>
+
+      <ul>
+      <% @answer.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="column is-12">
+    <div class="box cta">
+      <div class="field">
+        <div class="control">
+          <%= form.text_field :answer, class: "input", placeholder: "Jawaban" %>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="control">
+          <%= form.number_field :value, class: "input", placeholder: "Bobot" %>
+        </div>
+      </div>
+
+      <footer class="card-footer">
+        <div class="card-footer-item">
+          <div class="columns">
+            <div class="column is-12">
+              <div class="buttons is-center">
+                <%= form.submit "Ubah Jawaban" ,:class => "button is-link"%>
+                
+                <%= link_to question_path(@question) ,class: "button is-danger" do%>
+                  Kembali
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+<% end %>
+

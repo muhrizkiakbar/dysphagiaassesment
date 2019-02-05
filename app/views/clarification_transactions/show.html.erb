@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Transaction:</strong>
+  <%= @clarification_transaction.transaction_id %>
+</p>
+
+<p>
+  <strong>Clarification:</strong>
+  <%= @clarification_transaction.clarification %>
+</p>
+
+<%= link_to 'Edit', edit_clarification_transaction_path(@clarification_transaction) %> |
+<%= link_to 'Back', clarification_transactions_path %>

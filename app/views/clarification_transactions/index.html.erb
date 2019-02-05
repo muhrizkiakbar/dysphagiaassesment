@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Clarification Transactions</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Transaction</th>
+      <th>Clarification</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @clarification_transactions.each do |clarification_transaction| %>
+      <tr>
+        <td><%= clarification_transaction.transaction_id %></td>
+        <td><%= clarification_transaction.clarification %></td>
+        <td><%= link_to 'Show', clarification_transaction %></td>
+        <td><%= link_to 'Edit', edit_clarification_transaction_path(clarification_transaction) %></td>
+        <td><%= link_to 'Destroy', clarification_transaction, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Clarification Transaction', new_clarification_transaction_path %>

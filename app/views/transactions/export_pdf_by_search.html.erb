@@ -1,0 +1,103 @@
+<h1>Rekap Laporan Screening</h1>
+<hr>
+
+<% @transactions.each do |transaction|%>
+<table style="width:900px;margin-right:auto;">
+  <tr style="border-bottom: 1px solid #ddd;">
+    <td style="height: 30px;border-bottom: 1px solid #ddd;text-align: left;width:auto;" colspan=2>Dilakukan oleh : <%= transaction.useralias.name %></td>
+    <td style="height: 30px;border-bottom: 1px solid #ddd;text-align: left;width:auto;" colspan=2>Score : <%= transaction.score %></td>
+  </tr>
+  <tr style="border-bottom: 1px solid #ddd;">
+    <th style="height: 50px;border-bottom: 1px solid #ddd;text-align: left;width:auto;" colspan=4>Biodata Pasien</th>
+  </tr>
+  <tr>
+    <th style="height: 30px;border-bottom: 1px solid #ddd;text-align: center;width:auto;">Tanggal Masuk</th>
+    <th style="height: 30px;border-bottom: 1px solid #ddd;text-align: center;width:auto;">Nama</th>
+    <th style="height: 30px;border-bottom: 1px solid #ddd;text-align: center;width:auto;">Umur</th>
+    <th style="height: 30px;border-bottom: 1px solid #ddd;text-align: center;width:auto;">Jenis Kelamin</th>
+  </tr>
+  <tr>
+    <td style="height: 30px;border-bottom: 1px solid #ddd;text-align: center;width:auto;"><%= transaction.created_at.strftime("%d/%b/%Y %H:%M:%S") %></td>
+    <td style="height: 30px;border-bottom: 1px solid #ddd;text-align: center;width:auto;"><%= transaction.name %></td>
+    <td style="height: 30px;border-bottom: 1px solid #ddd;text-align: center;width:auto;"><%= transaction.age %></td>
+    <td style="height: 30px;border-bottom: 1px solid #ddd;text-align: center;width:auto;"><%= transaction.gender %></td>
+  </tr>
+  <tr>
+    <th style="height: 30px;border-bottom: 1px solid #ddd;text-align: center;width:auto;">Ruangan</th>
+    <th style="height: 30px;border-bottom: 1px solid #ddd;text-align: center;width:auto;">Dokter</th>
+    <th style="height: 30px;border-bottom: 1px solid #ddd;text-align: center;width:auto;">No. Rekam Medik</th>
+    <th style="height: 30px;border-bottom: 1px solid #ddd;text-align: center;width:auto;">Nomor Kasur</th>
+  </tr>
+  <tr>
+    <td style="height: 30px;border-bottom: 1px solid #ddd;text-align: center;width:auto;"><%= transaction.ruangan %></td>
+    <td style="height: 30px;border-bottom: 1px solid #ddd;text-align: center;width:auto;"><%= transaction.doctor %></td>
+    <td style="height: 30px;border-bottom: 1px solid #ddd;text-align: center;width:auto;"><%= transaction.medic_record_number %></td>
+    <td style="height: 30px;border-bottom: 1px solid #ddd;text-align: center;width:auto;"><%= transaction.bed_number %></td>
+  </tr>
+  <tr style="border-bottom: 1px solid #ddd;">
+    <th style="height: 50px;border-bottom: 1px solid #ddd;text-align: left;width:auto;" colspan=4>Pertanyaan dan Jawaban</th>
+  </tr>
+  <tr>
+    <th style="height: 30px;border-bottom: 1px solid #ddd;text-align: center;width:auto;" colspan=2>Pertanyaan</th>
+    <th style="height: 30px;border-bottom: 1px solid #ddd;text-align: center;width:auto;">Jawaban</th>
+    <th style="height: 30px;border-bottom: 1px solid #ddd;text-align: center;width:auto;">Bobot</th>
+  </tr>
+  <% transaction.subtransaction.each do |subtransaction| %>
+  <tr>
+    <td style="height: 30px;border-bottom: 1px solid #ddd;text-align: center;width:auto;" colspan=2><%= subtransaction.answer.question.question %></td>
+    <td style="height: 30px;border-bottom: 1px solid #ddd;text-align: center;width:auto;"><%= subtransaction.answer.answer %></td>
+    <td style="height: 30px;border-bottom: 1px solid #ddd;text-align: center;width:auto;"><%= subtransaction.answer.value %></td>
+  </tr>
+  <% end %>
+  <% @decision = Decision.where(["begin_value <= ?",transaction.score]).where(["end_value >= ?", transaction.score]).first %>
+
+  <tr style="border-bottom: 1px solid #ddd;">
+    <th style="height: 50px;border-bottom: 1px solid #ddd;text-align: left;width:auto;" colspan=4>Kesimpulan : <strong></strong><%= @decision.title %> <small>(<%= @decision.begin_value %> - <%= @decision.end_value %>)</small></strong></th>
+  </tr>
+  <tr style="border-bottom: 1px solid #ddd;">
+    <td style="height: 50px;border-bottom: 1px solid #ddd;text-align: left;width:auto;" colspan=4><%= @decision.decision.html_safe %></td>
+  </tr>
+
+  
+  <% if (transaction.confirm_transaction != nil) %>
+    <tr style="border-bottom: 1px solid #ddd;">
+      <th style="height: 50px;border-bottom: 1px solid #ddd;text-align: left;width:auto;" colspan=4>Hasil Tes </th>
+    </tr>
+    <tr style="border-bottom: 1px solid #ddd;">
+      <td style="height: 50px;border-bottom: 1px solid #ddd;text-align: left;width:auto;" colspan=4>
+        <% if transaction.confirm_transaction.status %>
+            Berhasil. Tidak usah mencatat tanda-tanda klinik. Beri urutan makan dan tempatkan pada tindakan pencegahan aspirasi.
+        <% else %>
+            Gagal. Catat tanda klinis aspirasi, suruh pasien untuk puasa dan beritahu dokter.
+        <% end %>
+      </td>
+    </tr>
+  <% end %> 
+        
+  <% if (transaction.clarification_transaction.count(:transaction_id) != 0) %>
+    <tr style="border-bottom: 1px solid #ddd;">
+      <th style="height: 50px;border-bottom: 1px solid #ddd;text-align: left;width:auto;" colspan=4>Hasil Klarifikasi</th>
+    </tr>
+    
+            <% transaction.clarification_transaction.each do |clarification| %> 
+                    <tr style="border-bottom: 1px solid #ddd;">       
+              <td style="height: 50px;border-bottom: 1px solid #ddd;text-align: left;width:auto;" colspan=4>
+                 <%= clarification.clarification %><br>
+               </td>
+               </tr>
+            <% end %>
+      
+      
+    
+       
+  <% end %>
+
+</table>
+
+<br>
+=====================================================================
+<br>
+<br>
+
+<% end %>
+

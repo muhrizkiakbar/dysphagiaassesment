@@ -1,0 +1,110 @@
+<%= render "layouts/nav" %>
+<% if notice!=nil %>
+<div class="column is-12 ">
+    <div class="notification is-warning">
+      <button class="delete"></button>
+      <%= notice %>
+    </div>
+</div>
+<% end %>
+
+<div class="column is-12 ">
+  <div class="box cta">
+    <div class="columns is-mobile is-centered">
+        <div class="field is-grouped is-grouped-multiline">
+          <div class="control">
+          <a href="#" class="button is-rounded is-primary">
+            <%= @question.question %>
+          </a>
+          </div>
+        </div>
+    </div>
+
+    <%= form_for @answer, :url => question_answers_path(@question), :method => :post do |form| %>
+      <% if @answer.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@answer.errors.count, "error") %> prohibited this answer from being saved:</h2>
+
+          <ul>
+          <% @answer.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+    <div class="card-footer">
+      <div class="column is-12">
+        <div class="field">
+          <div class="control">
+            <%= form.text_field :answer, class: "input", placeholder: "Jawaban" %>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="control">
+            <%= form.number_field :value, class: "input", placeholder: "Bobot" %>
+          </div>
+        </div>
+
+        <%= form.submit "Tambah Jawaban", :class => "button is-link is-fullwidth"%>
+      </div>
+    </div>
+
+    <% end %>
+
+    <div class="card-footer">
+      <div class="column is-12">
+        <div class="table__wrapper">
+          <table class="table is-narrow is-hoverable is-fullwidth">
+            <thead>
+              <tr>
+                <th>Jawaban</th>
+                <th class="has-text-centered">Bobot</th>
+                <th class="has-text-centered">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @answers.each do |answer| %>
+              <tr>
+                <td data-link="<%= edit_question_answer_path(@question,answer)%>"><%= answer.answer %></td>
+                <td data-link="<%= edit_question_answer_path(@question,answer)%>" class="has-text-centered"><%= answer.value %></td>
+                <td class="has-text-centered">
+                  <%= link_to question_answer_path(@question,answer), method: :delete, data: { confirm: 'Anda yakin?' } ,class: "icon has-text-danger" do%>
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                  <% end %>
+                </td>
+              </tr>
+              <% end %>
+            </tbody>
+          <table>
+        </div>
+      </div>
+    </div>
+
+    <footer class="card-footer">
+        <div class="card-footer-item">
+          <div class="columns">
+            <div class="column is-12">
+              <div class="buttons is-center">                
+                <%= link_to edit_question_path(@question), class: "button is-link" do%>
+                  Ubah Pertanyaan
+                <% end %>
+                
+                <%= link_to questions_path ,class: "button is-danger" do%>
+                  Kembali
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+  </div>
+  
+</div>
+
+<script>
+$("td[data-link]").click(function() {
+  window.location = $(this).data("link")
+})
+</script>

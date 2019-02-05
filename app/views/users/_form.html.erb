@@ -1,0 +1,73 @@
+<%= render "layouts/nav" %>
+<% if notice!=nil %>
+<div class="column is-12 ">
+    <div class="notification is-warning">
+      <button class="delete"></button>
+      <%= notice %>
+    </div>
+</div>
+<% end %>
+
+<%= form_with(model: user, local: true) do |form| %>
+  <% if user.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h2>
+
+      <ul>
+      <% user.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="column is-12">
+    <div class="box cta">
+
+      <div class="field">
+        <div class="control">
+          <%= form.email_field :email, class: "input", placeholder: "Email" %>
+        </div>
+      </div>
+      
+      <div class="field">
+        <div class="control">
+          <%= form.text_field :name, class: "input", placeholder: "Nama" %>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="control">
+          <% if @minimum_password_length %>
+            <em>(<%= @minimum_password_length %> characters minimum)</em><br />
+          <% end %>
+          <%= form.password_field :password, autofocus: true, autocomplete: "new-password", class: "input", placeholder: "Password" %>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="control">
+          <div class="select is-fullwidth">
+            <%= select("level","level",options_for_select([["Admin","1"],["User","2"]], :selected => form.object.level)) %>
+          </div>
+        </div>
+      </div>
+
+      <footer class="card-footer">
+        <div class="card-footer-item">
+          <div class="columns">
+            <div class="column is-12">
+              <div class="buttons is-center">
+                <%= form.submit "Ubah Pengguna" , :class => "button is-link"%>
+                
+                <%= link_to users_path ,class: "button is-danger" do%>
+                  Kembali
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+<% end %>

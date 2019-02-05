@@ -1,0 +1,147 @@
+<%= render "layouts/nav" %>
+
+<% if notice!=nil %>
+<div class="column is-12 ">
+    <div class="notification is-warning">
+      <button class="delete"></button>
+      <%= notice %>
+    </div>
+</div>
+<% end %>
+
+<div class="column is-12">
+  <div class="level-right is-hidden-touch">
+    <%= form_tag root_path, method: :get do %>  
+      <div class="field has-addons">
+      
+        <div class="control">
+          <%= text_field_tag :search, @search, placeholder: 'Cari Pengguna/Pasien', class: 'input' %>
+        </div>
+        <div class="control">
+          <%= submit_tag ("Cari"), class: 'button is-info' %>
+        </div>
+
+        <div class="control">
+          <%= link_to export_pdf_by_search_path( @search, :search => @search, :format => :pdf), class: "button is-danger" do %>
+            <span class="icon"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></span><span></span> Ekspor
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  
+  <br>
+  <div class= "columns is-mobile is-centered is-hidden-tablet">
+    <%= form_tag root_path, method: :get do %>  
+      <div class="field has-addons">
+      
+        <div class="control">
+          <%= text_field_tag :search, @search, placeholder: 'Cari Pengguna/Pasien', class: 'input' %>
+        </div>
+        <div class="control">
+          <%= submit_tag ("Cari"), class: 'button is-info' %>
+        </div>
+
+        <div class="control">
+          <%= link_to export_pdf_by_search_path( @search, :search => @search, :format => :pdf), class: "button is-danger" do %>
+            <span class="icon"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></span><span></span> Ekspor
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+      <%# <div class="control">
+        <input class="input" type="text" placeholder="Cari">
+      </div>
+      <div class="control">
+        <a class="button is-info">
+        <i class="fa fa-search" aria-hidden="true"></i>
+        </a>
+      </div>
+      <div class="control">
+        <a class="button is-danger">
+        <i class="fa fa-print" aria-hidden="true"></i>
+        </a>
+      </div> %>
+  </div>
+</div>
+
+<% if policy(@transactions).new? %>
+  <div class="column is-12 ">
+    <div class="box cta">
+      <div class="columns is-mobile is-centered">
+          <div class="field is-grouped is-grouped-multiline">
+            <div class="control">
+              <%= link_to new_transaction_path ,class: "button is-link is-medium" do%>
+                <span class="icon"><i class="fa fa-plus" aria-hidden="true"></i></span><span></span>Screening</a>
+              <% end %>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+<div class="column is-12 ">    
+  <% @transactions.each do |transaction| %>    
+    <div class="box cta">
+      <div class="card-content">
+        <div class="media">
+          <div class="media-content">
+            <p class="title is-4"><%= transaction.name %>
+              <% if transaction.gender=="Laki-Laki" || transaction.gender=="Laki-Laki" %>
+                <span class="icon"><i class="fa fa-mars" aria-hidden="true"></i></span> <small><%= transaction.age%> Tahun</small>
+              <% else %>
+                <span class="icon"><i class="fa fa-venus" aria-hidden="true"></i></span> <small><%= transaction.age%> Tahun</small>
+              <% end %>
+            </p>
+            <p class="subtitle is-6"><span class="icon"><i class="fa fa-file-o" aria-hidden="true"></i></span><%= transaction.medic_record_number %> / <span class="icon"><i class="fa fa-sign-in" aria-hidden="true"></i></span> <%= transaction.ruangan %> / <span class="icon"><i class="fa fa-bed" aria-hidden="true"></i></span> <%= transaction.bed_number %><br> <span class="icon"><i class="fa fa-clock-o" aria-hidden="true"></i></span><%= transaction.created_at.strftime("%H:%M:%S") %><span class="icon"><i class="fa fa-calendar" aria-hidden="true"></i></span><%= transaction.created_at.strftime("%d/%b/%Y") %></p>
+          </div>
+        </div>
+        <hr>
+        <div class="content">
+          <% @decision = Decision.where(["begin_value <= ?",transaction.score]).where(["end_value >= ?", transaction.score]).first %>
+          <span class="subtitle is-4 has-text-link"><%= @decision.title %></span><br>
+            <%= truncate @decision.decision, commisiion: "", length: 200, escape: false %>
+          <br>
+          <span class="icon"><i class="fa fa-user-md" aria-hidden="true"></i></span><%= transaction.doctor %>
+          <br/>
+          <% if current_user.admin? %>
+            <span class="icon"><i class="fa fa-user-circle" aria-hidden="true"></i></span><%= transaction.useralias.name %>
+          <% end %>
+        </div>
+      </div>
+
+      <footer class="card-footer">
+        <div class="card-footer-item">
+          <div class="columns">
+            <div class="column is-12">
+              <div class="buttons is-left">
+                <% if policy(transaction).export_pdf? %>
+                  <%= link_to export_pdf_transaction_path( transaction, :format => :pdf), class: "button is-danger" do %>
+                    <span class="icon"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></span><span></span> Ekspor
+                  <% end %>
+                <% end %>
+                <% if policy(transaction).destroy? %>
+                  <%= link_to 'Hapus', transaction, method: :delete,class: "button is-warning", data: { confirm: 'Are you sure?' } %>
+                <% end %>
+                <% if policy(transaction).show? %>
+                  <%= link_to 'Lihat', transaction,class: "button is-primary" %>
+
+                <% end %>
+              </div>
+            </div>
+            
+          </div>
+            
+        </div>
+      </footer>
+
+    </div>
+  <% end %>
+
+  <%= will_paginate @posts, renderer: BulmaPagination::Rails,
+      :class => 'pagination is-centered is-rounded',
+      :previous_label => 'Sebelumnya',
+      :next_label => 'Selanjutnya' %>
+
+</div>
+
