@@ -73,7 +73,7 @@
   <% @subtransactions.each do |subtransaction| %>
   <tr>
     <td style="width:300px;">
-        <p style="margin-bottom:15px;"><strong><%= subtransaction.answer.question.question %></strong></p>
+        <p style="margin-bottom:5px;"><strong><%= subtransaction.answer.question.question %></strong></p>
         <li><%= subtransaction.answer.answer %> (<%= subtransaction.answer.value %>)</li>
     </td>
   </tr>
@@ -88,9 +88,7 @@
         <h2>
         <%= @decision.title %> <small>(<%= @decision.begin_value %> - <%= @decision.end_value %>)</small>
         </h2>    
-        <p>
-          <%= @decision.decision.html_safe %>
-        </p>
+     
     </td>
   </tr>
   
@@ -98,7 +96,7 @@
 
 <% if (@transaction.confirm_transaction != nil) %>
 <hr>
-<table style="width:70%;;margin-right:auto;">
+<table style="width:100%;;margin-right:auto;">
   <tr>
     <td style="text-align:left;">
         <h2>
@@ -108,7 +106,9 @@
           <% if @transaction.confirm_transaction.status %>
               Berhasil. Tidak usah mencatat tanda-tanda klinik. Beri urutan makan dan tempatkan pada tindakan pencegahan aspirasi.
           <% else %>
-              Gagal. Catat tanda klinis aspirasi, suruh pasien untuk puasa dan beritahu dokter.
+            
+            Gagal. Catat tanda klinis aspirasi, suruh pasien untuk puasa dan beritahu dokter.
+            
           <% end %> 
         </p>
     </td>
@@ -135,5 +135,20 @@
 </table>
 <% end %>
 
+<% if (@transaction.clarification_transaction.count(:transaction_id) != 0) %>
+<hr>
+<table style="width:70%;;margin-right:auto;">
+  <tr>
+    <td style="text-align:left;">
+        
+  
+      <h2>  Tindakan Berikutnya :</h2>
+      <p>
+      Dianjurkan pasien untuk puasa termasuk pemberian obat dan segera beritahu dokter
+      </p>
+    </td>
+  </tr>
+</table>
 </br>
+<% end %>
 

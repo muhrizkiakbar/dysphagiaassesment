@@ -70,10 +70,15 @@
             <% end %>
           <br>
         </div>
+        <hr>
+         <div class="content">
+           <span class="subtitle is-4 has-text-link">Tindakan Berikutnya</span><br>
+            Dianjurkan pasien untuk puasa termasuk pemberian obat dan segera beritahu dokter.            
+        </div>
         <% end %>
 
       </div>
-      <% if (@transaction.score < 6) && (@transaction.confirm_transaction.nil?)  %>
+      <% if (@transaction.score < 6) && (@transaction.confirm_transaction == nil)  %>
       <footer class="card-footer">
         <div class="card-footer-item">
           <div class="content">
@@ -105,7 +110,7 @@
             </div>
           </div>
       </footer> 
-      <% elsif ((@transaction.confirm_transaction != nil) && (@transaction.confirm_transaction.status == false) && (@transaction.clarification_transaction.nil?)) %>
+    <% elsif ((@transaction.score < 6) && (@transaction.confirm_transaction.status == false) && (@transaction.clarification_transaction.count(:transaction_id) == 0)) %>
 
       <footer class="card-footer">
         <div class="card-footer-item">
