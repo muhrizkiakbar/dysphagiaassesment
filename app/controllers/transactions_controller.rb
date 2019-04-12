@@ -30,12 +30,25 @@ class TransactionsController < ApplicationController
   # GET /transactions/1
   # GET /transactions/1.json
   def show
+    
+    if (@transaction.score<=5)
+      insubtransaction=Subtransaction.where(transaction_id: params[:id]).pluck(:answer_id)
+      inanswer=Answer.where(id: insubtransaction)
+
+      @question=Question.where.not(id: Answer.where(id: inanswer).pluck(:question_id)).first
+
+    
+    end
+    
+
+    @newsubtransaction=Subtransaction.new
+
     @subtransactions = Subtransaction.where(transaction_id: params[:id])
     @decision = Decision.where(["begin_value <= ?",@transaction.score]).where(["end_value >= ?", @transaction.score]).first
     authorize @transaction
     @confirm_transaction = ConfirmTransaction.new
     @clarification_transaction = ClarificationTransaction.new
-    puts @confirm_transaction
+    # puts @confirm_transaction
     
   end
 
@@ -95,7 +108,6 @@ class TransactionsController < ApplicationController
   def new
 
     @transaction = Transaction.new
-    @questions = Question.all
     authorize @transaction
 
   end
@@ -109,12 +121,12 @@ class TransactionsController < ApplicationController
   # POST /transactions.json
   def create
     # @transaction = Transaction.new(transaction_params)
-    @answer = Answer.where(id: params[:answer_id])
+    # @answer = Answer.where(id: params[:answer_id])
 
-    @decision = Decision.where(["begin_value <= ?",@answer.sum(:value)]).where(["end_value >= ?", @answer.sum(:value)]).first
+    @decision = Decision.where(["begin_value <= ?","0"]).where(["end_value >= ?", "0"]).first
 
     @transaction = Transaction.new(custom_transaction_params)
-    @transaction.score = @answer.sum(:value)
+    @transaction.score = 0
     @transaction.user_id = current_user.id
     @transaction.gender = params[:gender][:gender]
     @transaction.decision= @decision
@@ -122,13 +134,13 @@ class TransactionsController < ApplicationController
    
     respond_to do |format|
       if @transaction.save
-        params[:answer_id].each do |answer|
-          @answerfind = Answer.find(answer)
-          @subtransaction= Subtransaction.new
-          @subtransaction.answer = @answerfind
-          @subtransaction.tran = @transaction
-          @subtransaction.save
-        end
+        # params[:answer_id].each do |answer|
+        #   @answerfind = Answer.find(answer)
+        #   @subtransaction= Subtransaction.new
+        #   @subtransaction.answer = @answerfind
+        #   @subtransaction.tran = @transaction
+        #   @subtransaction.save
+        # end
         format.html { redirect_to @transaction, notice: 'Transaction was successfully created.' }
         format.json { render :show, status: :created, location: @transaction }
       else

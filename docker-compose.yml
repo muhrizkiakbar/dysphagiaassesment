@@ -1,28 +1,69 @@
+# version: '3'
+# volumes:  
+#   mysql_data: {} 
+# services:  
+#   app:    
+#     build:      
+#       context: .      
+#       dockerfile: ./docker/app/Dockerfile    
+#     depends_on:      
+#       - db  
+#     command: bundle exec rails s -p 3000 -b '0.0.0.0'
+#   db:    
+#     image: mariadb:latest
+#     command: "--explicit_defaults_for_timestamp"
+#     volumes:      
+#       - mysql_data:/var/lib/mysql/data
+#     environment:
+#       MYSQL_ALLOW_EMPTY_PASSWORD: "yes" 
+#   web:    
+#     build:      
+#       context: .      
+#       dockerfile: ./docker/web/Dockerfile    
+#     depends_on:      
+#       - app    
+#     ports:      
+#       - 80:80
+
+# Set docker-compose version
 version: '3'
+volumes:  
+  mysql_data: {} 
 services:
-  dysphagiaassesment_db:
-    image: mysql:5.7
-    command: "--explicit_defaults_for_timestamp"
+  mysql:
+    container_name: mysql
     ports:
       - "3307:3306"
-    # volumes:
-    #   - bradenscale_mysql:/var/lib/mysql/data
-    #   - .my.cnf:/etc/mysql/conf.d
+    command: "--explicit_defaults_for_timestamp"
+    volumes:      
+      - mysql_data:/var/lib/mysql/data
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-  dysphagiaassesment_app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: bundle exec rails s -p 3000 -b '0.0.0.0'
-    volumes:
-      - .:/dysphagiaassesment
+    image: mariadb:latest
+
+  redis:
+    container_name: redis
+    ports:
+      - "6379:6379"
+    links:
+      - mysql
+    image: redis:5.0-rc
+
+  web:
+    container_name: web
+    build: .
     ports:
       - "3000:3000"
+    command: /bin/sh -c "rails s -b 0.0.0.0 -p 3000"
+    volumes:
+      - .:/dysphagiaassesment
     depends_on:
-      - dysphagiaassesment_db
-    links:
-      - dysphagiaassesment_db
+      - mysql
+      - redis
 
-# volumes:
-#   bradenscale_mysql:
+# Environment variables that allow my app to find other services
+    environment:
+      REDISTOGO_URL: "redis://redis:6379"
+      # POSTGRES_USER: postgres
+      # POSTGRES_HOST: postgres
+      # ELASTICSEARCH_URL: "http://elasticsearch:9200"

@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   
-  
+ 
   resources :decisions
 
   namespace :charts do
@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   resources :transactions, only: [:create,:new,:destroy,:show,:index] do
     resources :confirm_transactions, only: [:create]
     resources :clarification_transactions, only: [:create]
+    resources :substransactions, only: [:create]
     member do
       get :export_pdf, :as => 'export_pdf'
     end

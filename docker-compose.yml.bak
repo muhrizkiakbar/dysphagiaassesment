@@ -1,0 +1,28 @@
+version: '3'
+services:
+  dysphagiaassesment_db:
+    image: mysql:5.7
+    command: "--explicit_defaults_for_timestamp"
+    ports:
+      - "3307:3306"
+    # volumes:
+    #   - bradenscale_mysql:/var/lib/mysql/data
+    #   - .my.cnf:/etc/mysql/conf.d
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+  dysphagiaassesment_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: bundle exec rails s -p 3000 -b '0.0.0.0'
+    volumes:
+      - .:/dysphagiaassesment
+    ports:
+      - "3000:3000"
+    depends_on:
+      - dysphagiaassesment_db
+    links:
+      - dysphagiaassesment_db
+
+# volumes:
+#   bradenscale_mysql:

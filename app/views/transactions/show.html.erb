@@ -10,161 +10,198 @@
 </div>
 <% end %>
 
-<div class="column is-12 ">    
-    <div class="box cta">
-      <div class="card-content">
-        <div class="media">
-          <div class="media-content">
-            <p class="title is-4"><%= @transaction.name %>
-              <% if @transaction.gender=="Male" || @transaction.gender=="Male" %>
-                <span class="icon"><i class="fa fa-mars" aria-hidden="true"></i></span> <%= @transaction.age%> y.o
-              <% else %>
-                <span class="icon"><i class="fa fa-venus" aria-hidden="true"></i></span> <%= @transaction.age%> y.o
-              <% end %>
-            </p>
-            <p class="subtitle is-6"><span class="icon"><i class="fa fa-file-o" aria-hidden="true"></i>
-              </span><%= @transaction.medic_record_number %> /
-              <span class="icon"><i class="fa fa-sign-in" aria-hidden="true"></i></span> <%= @transaction.ruangan %> / 
-              <span class="icon"><i class="fa fa-bed" aria-hidden="true"></i></span> <%= @transaction.bed_number %><br> 
-              <span class="icon"><i class="fa fa-clock-o" aria-hidden="true"></i></span><%= @transaction.created_at.strftime("%H:%M:%S") %>
-              <span class="icon"><i class="fa fa-calendar" aria-hidden="true"></i></span><%= @transaction.created_at.strftime("%d/%b/%Y") %><br>
-              <span class="icon"><i class="fa fa-user-md" aria-hidden="true"></i></span><%= @transaction.doctor %>
-              </p>
+  <div class="column is-12 ">    
+      <% if (@question) %>
+      <div class="box cta">
+          <div class="card-content">
+            <div class="media">
+              <div class="media-content">
+                  <div class="field">
+                  <%= form_for @newsubtransaction, :url => transaction_substransactions_path(@transaction), :method => :post do |form| %>
+                    <label class="label"><%= @question.question %></label>
+                    <div class="control">
+                      <div class="select is-fullwidth">
+                        <%= select_tag "answer_id", options_from_collection_for_select(@question.answer.collect,:id,:answer) %>
+                      </div>
+                    </div>
+                        
+                  
+                  </div>
+              </div>
+            </div>
+            
+
           </div>
-        </div>
-        <hr>
-        <div class="content">
-          <span class="subtitle is-4 has-text-link "><%= @decision.title %> (<%= @decision.begin_value %> - <%= @decision.end_value %>)</span><br>
-            <%= @decision.decision.html_safe %>
-          <br>
-        </div>
-        <hr>
-        <div class="content">
-          <span class="subtitle is-4 has-text-link">Pertanyaan dan Jawaban</span><br>
-            <% @subtransactions.each do |subtransaction| %>
-              <%= subtransaction.answer.question.question %><span class="icon"><i class="fa fa-question-circle-o" aria-hidden="true"></i></span> <br>
-                <li><%= subtransaction.answer.answer %> (<%= subtransaction.answer.value %>)</li>
+          <footer class="card-footer">
+            <div class="card-footer-item">
+              <div class="columns">
+                <div class="column is-12">
+                  <div class="buttons is-left">
+                  <%= form.submit "Submit", :class => "button is-link"%>
+                  </div>
+                </div>
+                
+              </div>
+                
+            </div>
             <% end %>
-          <br>
+          </footer>
+      </div>
+      <%end %>
+      <div class="box cta">
+        <div class="card-content">
+          <div class="media">
+            <div class="media-content">
+              <p class="title is-4"><%= @transaction.name %>
+                <% if @transaction.gender=="Male" || @transaction.gender=="Male" %>
+                  <span class="icon"><i class="fa fa-mars" aria-hidden="true"></i></span> <%= @transaction.age%> y.o
+                <% else %>
+                  <span class="icon"><i class="fa fa-venus" aria-hidden="true"></i></span> <%= @transaction.age%> y.o
+                <% end %>
+              </p>
+              <p class="subtitle is-6"><span class="icon"><i class="fa fa-file-o" aria-hidden="true"></i>
+                </span><%= @transaction.medic_record_number %> /
+                <span class="icon"><i class="fa fa-sign-in" aria-hidden="true"></i></span> <%= @transaction.ruangan %> / 
+                <span class="icon"><i class="fa fa-bed" aria-hidden="true"></i></span> <%= @transaction.bed_number %><br> 
+                <span class="icon"><i class="fa fa-clock-o" aria-hidden="true"></i></span><%= @transaction.created_at.strftime("%H:%M:%S") %>
+                <span class="icon"><i class="fa fa-calendar" aria-hidden="true"></i></span><%= @transaction.created_at.strftime("%d/%b/%Y") %><br>
+                <span class="icon"><i class="fa fa-user-md" aria-hidden="true"></i></span><%= @transaction.doctor %>
+                </p>
+            </div>
+          </div>
+          <hr>
+          <div class="content">
+            <span class="subtitle is-4 has-text-link "><%= @decision.title %> (<%= @decision.begin_value %> - <%= @decision.end_value %>)</span><br>
+              <%= @decision.decision.html_safe %>
+            <br>
+          </div>
+          <hr>
+          <div class="content">
+            <span class="subtitle is-4 has-text-link">Pertanyaan dan Jawaban</span><br>
+              <% @subtransactions.each do |subtransaction| %>
+                <%= subtransaction.answer.question.question %><span class="icon"><i class="fa fa-question-circle-o" aria-hidden="true"></i></span> <br>
+                  <li><%= subtransaction.answer.answer %> (<%= subtransaction.answer.value %>)</li>
+              <% end %>
+            <br>
+          </div>
+          
+          <% if (@transaction.confirm_transaction != nil) %>
+          <hr>
+          <div class="content">
+            <span class="subtitle is-4 has-text-link">Hasil Tes</span><br>
+              <% if @transaction.confirm_transaction.status %>
+                Berhasil. Tidak usah mencatat tanda-tanda klinik. Beri urutan makan dan tempatkan pada tindakan pencegahan aspirasi.
+              <% else %>
+                Gagal. Catat tanda klinis aspirasi, suruh pasien untuk puasa dan beritahu dokter.
+              <% end %>
+            <br>
+          </div>
+          <% end %> 
+          
+          <% if (@transaction.clarification_transaction.count(:transaction_id) != 0) %>
+          <hr>
+          <div class="content">
+            <span class="subtitle is-4 has-text-link">Hasil Klarifikasi</span><br>
+              <% @transaction.clarification_transaction.each do |clarification| %> 
+                <%= clarification.clarification %><br>
+              <% end %>
+            <br>
+          </div>
+          <hr>
+          <div class="content">
+            <span class="subtitle is-4 has-text-link">Tindakan Berikutnya</span><br>
+              Dianjurkan pasien untuk puasa termasuk pemberian obat dan segera beritahu dokter.            
+          </div>
+          <% end %>
+
         </div>
-        
-        <% if (@transaction.confirm_transaction != nil) %>
-        <hr>
-         <div class="content">
-           <span class="subtitle is-4 has-text-link">Hasil Tes</span><br>
-            <% if @transaction.confirm_transaction.status %>
-              Berhasil. Tidak usah mencatat tanda-tanda klinik. Beri urutan makan dan tempatkan pada tindakan pencegahan aspirasi.
-            <% else %>
-              Gagal. Catat tanda klinis aspirasi, suruh pasien untuk puasa dan beritahu dokter.
-            <% end %>
-          <br>
-        </div>
-        <% end %> 
-        
-        <% if (@transaction.clarification_transaction.count(:transaction_id) != 0) %>
-        <hr>
-         <div class="content">
-           <span class="subtitle is-4 has-text-link">Hasil Klarifikasi</span><br>
-            <% @transaction.clarification_transaction.each do |clarification| %> 
-              <%= clarification.clarification %><br>
-            <% end %>
-          <br>
-        </div>
-        <hr>
-         <div class="content">
-           <span class="subtitle is-4 has-text-link">Tindakan Berikutnya</span><br>
-            Dianjurkan pasien untuk puasa termasuk pemberian obat dan segera beritahu dokter.            
-        </div>
+        <% if (@transaction.score < 6) && (@transaction.confirm_transaction == nil)  %>
+          <footer class="card-footer">
+            <div class="card-footer-item">
+              <div class="content">
+                  <p class="subtitle is-6">  
+                    Tes menelan air. Posisikan pasien duduk tegak, beri minum 90 ml air dalam cangkir (tanpa sedotan) tanpa berhenti, beri bantuan memegang cangkir bila diperlukan.
+                    </p>
+                    <%= form_for @confirm_transaction, url: transaction_confirm_transactions_path(@transaction), method: :post do |form| %> 
+                  <div class="columns">
+                    <div class="column is-12">
+                      <div class="column is-6">
+                        <div class="buttons is-left is-6">
+
+                          <%= form.submit "Berhasil", class: "button is-link" %>
+                          <%= form.submit "Gagal", class: "button is-danger" %>
+                        
+                        </div>
+                      </div>
+                      <div class="column is-6">
+                        <div class="buttons is-left is-6">
+                          
+            
+                        
+                        </div>
+                      </div>
+                    </div>
+                              
+                  </div>
+                  <% end %>
+                </div>
+              </div>
+          </footer> 
+        <% elsif ((@transaction.score < 6) && (@transaction.confirm_transaction.status == false) && (@transaction.clarification_transaction.count(:transaction_id) == 0)) %>
+
+        <footer class="card-footer">
+          <div class="card-footer-item">
+            <div class="content">
+                <p class="subtitle is-6">  
+                  Tanda Klarifikasi
+                  </p>
+                  <%= form_for @clarification_transaction, url: transaction_clarification_transactions_path(@transaction), method: :post do |form| %> 
+                <div class="columns">
+                  <div class="column is-12">
+                    <div class="column is-6">
+                        <% clarifications=['Batuk','Tenggorokan Bersih','Perubahan Pernafasan','Terdengar Suara Basah atau Gurgling'] %>
+                        <% clarifications.each do |clarification| %>
+                          
+                          <%= form.check_box :clarification, { multiple: true }, clarification, false %>
+                          <%= form.label clarification %>
+                          <br>
+                        <% end %>
+                                            
+                    </div>
+                    <div class="column is-6">
+                      <div class="buttons is-left is-6">
+                        
+                        <%= form.submit "Simpan", class: "button is-link" %>
+                      
+                      </div>
+                    </div>
+                  </div>
+                            
+                </div>
+                  <% end %>
+              </div>
+            </div>
+        </footer>
+
+        <% else %>
+          <footer class="card-footer">
+            <div class="card-footer-item">
+              <div class="columns">
+                <div class="column is-12">
+                  <div class="buttons is-left">
+                    <%= link_to 'Kembali', transactions_path, class: "button is-link" %>
+                    <%= link_to export_pdf_transaction_path(@transaction, :format => :pdf), class: "button is-danger" do %>
+                      <span class="icon"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></span><span></span> Ekspor
+                    <% end %>
+                    <%= link_to 'Hapus', @transaction, method: :delete,class: "button is-warning", data: { confirm: 'Anda yakin?' } %>
+                  </div>
+                </div>
+                
+              </div>
+                
+            </div>
+          </footer>
         <% end %>
 
       </div>
-      <% if (@transaction.score < 6) && (@transaction.confirm_transaction == nil)  %>
-      <footer class="card-footer">
-        <div class="card-footer-item">
-          <div class="content">
-              <p class="subtitle is-6">  
-                Tes menelan air. Posisikan pasien duduk tegak, beri minum 90 ml air dalam cangkir (tanpa sedotan) tanpa berhenti, beri bantuan memegang cangkir bila diperlukan.
-                </p>
-                <%= form_for @confirm_transaction, url: transaction_confirm_transactions_path(@transaction), method: :post do |form| %> 
-              <div class="columns">
-                <div class="column is-12">
-                  <div class="column is-6">
-                    <div class="buttons is-left is-6">
-
-                      <%= form.submit "Berhasil", class: "button is-link" %>
-                      <%= form.submit "Gagal", class: "button is-danger" %>
-                    
-                    </div>
-                  </div>
-                  <div class="column is-6">
-                    <div class="buttons is-left is-6">
-                      
-        
-                    
-                    </div>
-                  </div>
-                </div>
-                           
-              </div>
-              <% end %>
-            </div>
-          </div>
-      </footer> 
-    <% elsif ((@transaction.score < 6) && (@transaction.confirm_transaction.status == false) && (@transaction.clarification_transaction.count(:transaction_id) == 0)) %>
-
-      <footer class="card-footer">
-        <div class="card-footer-item">
-          <div class="content">
-              <p class="subtitle is-6">  
-                Tanda Klarifikasi
-                </p>
-                <%= form_for @clarification_transaction, url: transaction_clarification_transactions_path(@transaction), method: :post do |form| %> 
-              <div class="columns">
-                <div class="column is-12">
-                  <div class="column is-6">
-                      <% clarifications=['Batuk','Tenggorokan Bersih','Perubahan Pernafasan','Terdengar Suara Basah atau Gurgling'] %>
-                      <% clarifications.each do |clarification| %>
-                        
-                        <%= form.check_box :clarification, { multiple: true }, clarification, false %>
-                        <%= form.label clarification %>
-                        <br>
-                      <% end %>
-                                          
-                  </div>
-                  <div class="column is-6">
-                    <div class="buttons is-left is-6">
-                      
-                      <%= form.submit "Simpan", class: "button is-link" %>
-                    
-                    </div>
-                  </div>
-                </div>
-                           
-              </div>
-                <% end %>
-            </div>
-          </div>
-      </footer>
-
-      <% else %>
-      <footer class="card-footer">
-        <div class="card-footer-item">
-          <div class="columns">
-            <div class="column is-12">
-              <div class="buttons is-left">
-                <%= link_to 'Kembali', transactions_path, class: "button is-link" %>
-                <%= link_to export_pdf_transaction_path(@transaction, :format => :pdf), class: "button is-danger" do %>
-                  <span class="icon"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></span><span></span> Ekspor
-                <% end %>
-                <%= link_to 'Hapus', @transaction, method: :delete,class: "button is-warning", data: { confirm: 'Anda yakin?' } %>
-              </div>
-            </div>
-            
-          </div>
-            
-        </div>
-      </footer>
-      <% end %>
-
-    </div>
-</div>
+  </div>

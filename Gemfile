@@ -40,6 +40,8 @@ gem 'will_paginate-bulma'
 gem 'chartkick'
 gem 'groupdate'
 
+
+
 group :development do
 	gem 'capistrano', '~> 3.11'
 	gem 'capistrano-rails', '~> 1.4'

@@ -73,17 +73,7 @@
           <%= form.text_field :bed_number, class: "input", placeholder: "Nomor Kasur" %>
         </div>
       </div>
-      
-      <% @questions.each do |question| %>
-        <div class="field">
-          <label class="label"><%= question.question%></label>
-          <div class="control">
-            <div class="select is-fullwidth">
-              <%= select_tag "answer_id[]", options_from_collection_for_select(question.answer.collect,:id,:answer) %>
-            </div>
-          </div>
-        </div>
-      <% end %>
+
 
       <footer class="card-footer">
         <div class="card-footer-item">
