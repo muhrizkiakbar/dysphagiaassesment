@@ -1,6 +1,8 @@
 # config valid for current version and patch releases of Capistrano
 lock "~> 3.11.0"
 
+set :passenger_restart_with_touch, true
+
 set :application, "dysphagiaassesment"
 set :repo_url, "https://github.com/muhrizkiakbar/dysphagiaassesment.git"
 
